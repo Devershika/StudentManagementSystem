@@ -42,3 +42,27 @@ class Main {
                     operations.displayStudents();
                     break;
 
+                
+                case 3:
+                    System.out.print("Enter PRN to search: ");
+                    prn = Integer.parseInt(scan.nextLine());
+                    Student student = operations.searchStudentByPRN(prn);
+                    if (student != null)
+                        student.display();
+                    else
+                        System.out.println("Student not found.");
+                    break;
+
+                case 4:
+                    System.out.print("Enter Name to search: ");
+                    name = scan.nextLine();
+                    List<Student> studentsByName = operations.searchStudentByName(name);
+                    if (!studentsByName.isEmpty())
+                        studentsByName.forEach(Student::display);
+                    else
+                        System.out.println("No students found with this name.");
+                    break;
+
+
+                    
+
