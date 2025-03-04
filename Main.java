@@ -63,6 +63,33 @@ class Main {
                         System.out.println("No students found with this name.");
                     break;
 
+                
+                case 5:
+                    System.out.print("Enter Branch to search: ");
+                    branch = scan.nextLine();
+                    List<Student> studentsByBranch = operations.searchStudentByBranch(branch);
+                    if (!studentsByBranch.isEmpty())
+                        studentsByBranch.forEach(Student::display);
+                    else
+                        System.out.println("No students found in this branch.");
+                    break;
+
+                case 6:
+                    System.out.print("Enter PRN to update: ");
+                    prn = Integer.parseInt(scan.nextLine());
+                    System.out.print("Enter new Name: ");
+                    name = scan.nextLine();
+                    System.out.print("Enter new Branch: ");
+                    branch = scan.nextLine();
+                    System.out.print("Enter new Batch: ");
+                    batch = scan.nextLine();
+                    System.out.print("Enter new CGPA: ");
+                    cgpa = Float.parseFloat(scan.nextLine());
+
+                    operations.updateStudent(prn, name, branch, batch, cgpa);
+                    break;
+
+
 
                     
 
