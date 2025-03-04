@@ -28,3 +28,19 @@ class Student {
         return prn;
     }
 
+    
+    public void setPRN(int prn) {
+        this.prn = prn;
+    }
+
+    public String getBranch() {
+        return branch;
+
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    
+
