@@ -43,4 +43,23 @@ class Student {
     }
 
     
+    public String getBatch() {
+        return batch;
+
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    public float getcgpa() {
+        return cgpa;
+
+    }
+
+    public void setcgpa(float cgpa) {
+        this.cgpa = cgpa;
+    }
+
+    
 
