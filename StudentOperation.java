@@ -55,4 +55,22 @@ class StudentOperations {
     }
 
     
+    public boolean updateStudent(int prn, String newName, String newBranch, String newBatch, float newCGPA) {
+        Student student = searchStudentByPRN(prn);
+        if (student != null) {
+            student.setName(newName);
+            student.setBranch(newBranch);
+            student.setBatch(newBatch);
+            student.setcgpa(newCGPA);
+            System.out.println("Student details updated successfully.");
+            return true;
+        } else {
+            System.out.println("Student with PRN " + prn + " not found.");
+            return false;
+        }
+    }
+
+    
+
+    
 
