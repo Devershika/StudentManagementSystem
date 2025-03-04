@@ -71,6 +71,23 @@ class StudentOperations {
     }
 
     
+    public boolean deleteStudent(int prn) {
+        Iterator<Student> iterator = students.iterator();
+        while (iterator.hasNext()) {
+            Student student = iterator.next();
+            if (student.getPRN() == prn) {
+                iterator.remove();
+                System.out.println("Student removed successfully.");
+                return true;
+            }
+        }
+        System.out.println("Student with PRN " + prn + " not found.");
+        return false;
+    }
+}
+
+
+    
 
     
 
