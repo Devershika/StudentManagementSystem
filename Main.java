@@ -21,3 +21,24 @@ class Main {
 
             choice = Integer.parseInt(scan.nextLine());
 
+            
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Name: ");
+                    String name = scan.nextLine();
+                    System.out.print("Enter PRN: ");
+                    int prn = Integer.parseInt(scan.nextLine()); // FIXED: Missing semicolon
+                    System.out.print("Enter Branch: ");
+                    String branch = scan.nextLine();
+                    System.out.print("Enter Batch: ");
+                    String batch = scan.nextLine();
+                    System.out.print("Enter CGPA: ");
+                    float cgpa = Float.parseFloat(scan.nextLine());
+
+                    operations.addStudent(new Student(name, prn, branch, batch, cgpa));
+                    break; // FIXED: Ensured break is properly placed
+
+                case 2:
+                    operations.displayStudents();
+                    break;
+
