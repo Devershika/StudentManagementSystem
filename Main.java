@@ -89,6 +89,28 @@ class Main {
                     operations.updateStudent(prn, name, branch, batch, cgpa);
                     break;
 
+                
+                case 7:
+                    System.out.print("Enter PRN to delete: ");
+                    prn = Integer.parseInt(scan.nextLine());
+                    operations.deleteStudent(prn);
+                    break;
+
+                case 8:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            } // FIXED: Ensured switch block closes properly
+
+        } while (choice != 8); // FIXED: Proper loop closure
+
+        scan.close(); // FIXED: Ensure scanner closes properly
+    }
+}
+
+
 
 
                     
