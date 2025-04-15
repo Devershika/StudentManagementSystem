@@ -1,16 +1,12 @@
-//DEVERSHIKA MOHANE
-//23070126032
-//AIML A2
-
 import java.util.*;
+import exceptions.*;
 
-class Main {
-    public static void main(String args[]) {
+public class Main {
+    public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         StudentOperations operations = new StudentOperations();
         int choice;
 
-        
         do {
             System.out.println("\nMenu:");
             System.out.println("1. Add Student");
@@ -22,100 +18,89 @@ class Main {
             System.out.println("7. Delete Student");
             System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
-
             choice = Integer.parseInt(scan.nextLine());
 
-            
-            switch (choice) {
-                case 1:
-                    System.out.print("Enter Name: ");
-                    String name = scan.nextLine();
-                    System.out.print("Enter PRN: ");
-                    int prn = Integer.parseInt(scan.nextLine()); // FIXED: Missing semicolon
-                    System.out.print("Enter Branch: ");
-                    String branch = scan.nextLine();
-                    System.out.print("Enter Batch: ");
-                    String batch = scan.nextLine();
-                    System.out.print("Enter CGPA: ");
-                    float cgpa = Float.parseFloat(scan.nextLine());
+            try {
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter Name: ");
+                        String name = scan.nextLine();
+                        System.out.print("Enter PRN: ");
+                        int prn = Integer.parseInt(scan.nextLine());
+                        System.out.print("Enter Branch: ");
+                        String branch = scan.nextLine();
+                        System.out.print("Enter Batch: ");
+                        String batch = scan.nextLine();
+                        System.out.print("Enter CGPA: ");
+                        float cgpa = Float.parseFloat(scan.nextLine());
 
-                    operations.addStudent(new Student(name, prn, branch, batch, cgpa));
-                    break; // FIXED: Ensured break is properly placed
+                        operations.addStudent(new Student(name, prn, branch, batch, cgpa));
+                        break;
 
-                case 2:
-                    operations.displayStudents();
-                    break;
+                    case 2:
+                        operations.displayStudents();
+                        break;
 
-                
-                case 3:
-                    System.out.print("Enter PRN to search: ");
-                    prn = Integer.parseInt(scan.nextLine());
-                    Student student = operations.searchStudentByPRN(prn);
-                    if (student != null)
-                        student.display();
-                    else
-                        System.out.println("Student not found.");
-                    break;
+                    case 3:
+                        System.out.print("Enter PRN to search: ");
+                        prn = Integer.parseInt(scan.nextLine());
+                        operations.searchStudentByPRN(prn).display();
+                        break;
 
-                case 4:
-                    System.out.print("Enter Name to search: ");
-                    name = scan.nextLine();
-                    List<Student> studentsByName = operations.searchStudentByName(name);
-                    if (!studentsByName.isEmpty())
-                        studentsByName.forEach(Student::display);
-                    else
-                        System.out.println("No students found with this name.");
-                    break;
+                    case 4:
+                        System.out.print("Enter Name to search: ");
+                        name = scan.nextLine();
+                        List<Student> nameResults = operations.searchStudentByName(name);
+                        if (nameResults.isEmpty()) {
+                            System.out.println("No students found.");
+                        } else {
+                            nameResults.forEach(Student::display);
+                        }
+                        break;
 
-                
-                case 5:
-                    System.out.print("Enter Branch to search: ");
-                    branch = scan.nextLine();
-                    List<Student> studentsByBranch = operations.searchStudentByBranch(branch);
-                    if (!studentsByBranch.isEmpty())
-                        studentsByBranch.forEach(Student::display);
-                    else
-                        System.out.println("No students found in this branch.");
-                    break;
+                    case 5:
+                        System.out.print("Enter Branch to search: ");
+                        branch = scan.nextLine();
+                        List<Student> branchResults = operations.searchStudentByBranch(branch);
+                        if (branchResults.isEmpty()) {
+                            System.out.println("No students found.");
+                        } else {
+                            branchResults.forEach(Student::display);
+                        }
+                        break;
 
-                case 6:
-                    System.out.print("Enter PRN to update: ");
-                    prn = Integer.parseInt(scan.nextLine());
-                    System.out.print("Enter new Name: ");
-                    name = scan.nextLine();
-                    System.out.print("Enter new Branch: ");
-                    branch = scan.nextLine();
-                    System.out.print("Enter new Batch: ");
-                    batch = scan.nextLine();
-                    System.out.print("Enter new CGPA: ");
-                    cgpa = Float.parseFloat(scan.nextLine());
+                    case 6:
+                        System.out.print("Enter PRN to update: ");
+                        prn = Integer.parseInt(scan.nextLine());
+                        System.out.print("Enter New Name: ");
+                        name = scan.nextLine();
+                        System.out.print("Enter New Branch: ");
+                        branch = scan.nextLine();
+                        System.out.print("Enter New Batch: ");
+                        batch = scan.nextLine();
+                        System.out.print("Enter New CGPA: ");
+                        cgpa = Float.parseFloat(scan.nextLine());
 
-                    operations.updateStudent(prn, name, branch, batch, cgpa);
-                    break;
+                        operations.updateStudent(prn, name, branch, batch, cgpa);
+                        break;
 
-                
-                case 7:
-                    System.out.print("Enter PRN to delete: ");
-                    prn = Integer.parseInt(scan.nextLine());
-                    operations.deleteStudent(prn);
-                    break;
+                    case 7:
+                        System.out.print("Enter PRN to delete: ");
+                        prn = Integer.parseInt(scan.nextLine());
+                        operations.deleteStudent(prn);
+                        break;
 
-                case 8:
-                    System.out.println("Exiting program...");
-                    break;
+                    case 8:
+                        System.out.println("Exiting...");
+                        break;
 
-                default:
-                    System.out.println("Invalid choice! Please try again.");
-            } // FIXED: Ensured switch block closes properly
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
 
-        } while (choice != 8); // FIXED: Proper loop closure
-
-        scan.close(); // FIXED: Ensure scanner closes properly
+        } while (choice != 8);
     }
 }
-
-
-
-
-                    
-
