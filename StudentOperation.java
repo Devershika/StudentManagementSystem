@@ -1,122 +1,102 @@
+import java.sql.*;
 import java.util.*;
 
 public class StudentOperations {
-    private ArrayList<Student> students;
-
-    public StudentOperations() {
-        this.students = new ArrayList<>();
+    
+    public void addStudent(Student student) throws SQLException {
+        String query = "INSERT INTO students (name, prn, branch, batch, cgpa) VALUES (?, ?, ?, ?, ?)";
+        try (Connection con = DBConnections.getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, student.getName());
+            ps.setInt(2, student.getPRN());
+            ps.setString(3, student.getBranch());
+            ps.setString(4, student.getBatch());
+            ps.setFloat(5, student.getcgpa());
+            ps.executeUpdate();
+            System.out.println("Student added successfully!");
+        }
     }
 
-    // 1. Add Student
-    public void addStudent(Student student) throws DuplicateStudentException, InvalidDataException {
-        if (student.getCgpa() < 0 || student.getCgpa() > 10) {
-            throw new InvalidDataException("CGPA must be between 0 and 10.");
-        }
-
-        for (Student s : students) {
-            if (s.getPRN() == student.getPRN()) {
-                throw new DuplicateStudentException("Student with PRN " + student.getPRN() + " already exists.");
+    public void displayStudents() throws SQLException {
+        String query = "SELECT * FROM students";
+        try (Connection con = DBConnections.getConnection(); Statement stmt = con.createStatement()) {
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                Student s = new Student(rs.getString("name"), rs.getInt("prn"), rs.getString("branch"),
+                        rs.getString("batch"), rs.getFloat("cgpa"));
+                s.display();
             }
         }
-
-        students.add(student);
-        System.out.println("Student added successfully.");
     }
 
-    // 2. Display Students
-    public void displayStudents() throws StudentNotFoundException {
-        if (students.isEmpty()) {
-            throw new StudentNotFoundException("No students available to display.");
-        }
-        for (Student student : students) {
-            student.display();
-        }
-    }
-
-    // 3. Search by PRN
-    public Student searchStudentByPRN(int prn) throws StudentNotFoundException {
-        for (Student student : students) {
-            if (student.getPRN() == prn) {
-                return student;
+    public Student searchStudentByPRN(int prn) throws SQLException, StudentNotFoundException {
+        String query = "SELECT * FROM students WHERE prn = ?";
+        try (Connection con = DBConnections.getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, prn);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Student(rs.getString("name"), rs.getInt("prn"),
+                        rs.getString("branch"), rs.getString("batch"), rs.getFloat("cgpa"));
+            } else {
+                throw new StudentNotFoundException("No student found with PRN: " + prn);
             }
         }
-        throw new StudentNotFoundException("Student with PRN " + prn + " not found.");
     }
 
-    // 4. Search by Name
-    public List<Student> searchStudentByName(String name) throws StudentNotFoundException, InvalidDataException {
-        if (name == null || name.isEmpty()) {
-            throw new InvalidDataException("Name cannot be empty.");
-        }
-
-        List<Student> result = new ArrayList<>();
-        for (Student student : students) {
-            if (student.getName().equalsIgnoreCase(name)) {
-                result.add(student);
+    public List<Student> searchStudentByName(String name) throws SQLException {
+        String query = "SELECT * FROM students WHERE name LIKE ?";
+        List<Student> list = new ArrayList<>();
+        try (Connection con = DBConnections.getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Student(rs.getString("name"), rs.getInt("prn"),
+                        rs.getString("branch"), rs.getString("batch"), rs.getFloat("cgpa")));
             }
         }
-
-        if (result.isEmpty()) {
-            throw new StudentNotFoundException("No student found with name: " + name);
-        }
-
-        return result;
+        return list;
     }
 
-    // 5. Search by Branch
-    public List<Student> searchStudentByBranch(String branch) throws StudentNotFoundException, InvalidDataException {
-        if (branch == null || branch.isEmpty()) {
-            throw new InvalidDataException("Branch cannot be empty.");
-        }
-
-        List<Student> result = new ArrayList<>();
-        for (Student student : students) {
-            if (student.getBranch().equalsIgnoreCase(branch)) {
-                result.add(student);
+    public List<Student> searchStudentByBranch(String branch) throws SQLException {
+        String query = "SELECT * FROM students WHERE branch = ?";
+        List<Student> list = new ArrayList<>();
+        try (Connection con = DBConnections.getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, branch);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Student(rs.getString("name"), rs.getInt("prn"),
+                        rs.getString("branch"), rs.getString("batch"), rs.getFloat("cgpa")));
             }
         }
-
-        if (result.isEmpty()) {
-            throw new StudentNotFoundException("No students found in branch: " + branch);
-        }
-
-        return result;
+        return list;
     }
 
-    // 6. Update Student
-    public void updateStudent(int prn, String newName, String newBranch, String newBatch, float newCGPA)
-            throws StudentNotFoundException, InvalidDataException {
-        Student student = searchStudentByPRN(prn);
-
-        if (newCGPA < 0 || newCGPA > 10) {
-            throw new InvalidDataException("Invalid CGPA. Must be between 0 and 10.");
-        }
-
-        student.setName(newName);
-        student.setBranch(newBranch);
-        student.setBatch(newBatch);
-        student.setCgpa(newCGPA);
-
-        System.out.println("Student details updated successfully.");
-    }
-
-    // 7. Delete Student
-    public void deleteStudent(int prn) throws StudentNotFoundException {
-        Iterator<Student> iterator = students.iterator();
-        boolean removed = false;
-
-        while (iterator.hasNext()) {
-            Student student = iterator.next();
-            if (student.getPRN() == prn) {
-                iterator.remove();
-                removed = true;
-                System.out.println("Student removed successfully.");
-                break;
+    public void updateStudent(int prn, String name, String branch, String batch, float cgpa) throws SQLException {
+        String query = "UPDATE students SET name=?, branch=?, batch=?, cgpa=? WHERE prn=?";
+        try (Connection con = DBConnections.getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, name);
+            ps.setString(2, branch);
+            ps.setString(3, batch);
+            ps.setFloat(4, cgpa);
+            ps.setInt(5, prn);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Student updated successfully.");
+            } else {
+                System.out.println("Student not found.");
             }
         }
+    }
 
-        if (!removed) {
-            throw new StudentNotFoundException("Student with PRN " + prn + " not found.");
+    public void deleteStudent(int prn) throws SQLException {
+        String query = "DELETE FROM students WHERE prn=?";
+        try (Connection con = DBConnections.getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, prn);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Student deleted successfully.");
+            } else {
+                System.out.println("Student not found.");
+            }
         }
     }
 }
